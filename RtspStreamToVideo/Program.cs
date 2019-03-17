@@ -4,13 +4,16 @@ using System.Threading.Tasks;
 using RtspClientSharp;
 using RtspClientSharp.RawFrames;
 using RtspClientSharp.RawFrames.Video;
+using RtspStreamToVideo.RawFramesReceiving;
 
 namespace RtspStreamToVideo
 {
     class Program
     {
-        private static DateTime _startDateTime;
-        static async Task Main(string[] args)
+        private static readonly RealtimeVideoSource _realtimeVideoSource = new RealtimeVideoSource();
+        private static RawFramesSource _rawFramesSource;
+
+        private static void Main(string[] args)
         {
             var serverUri = new Uri("rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov");
             var connectionParameters = new ConnectionParameters(serverUri)
@@ -18,28 +21,32 @@ namespace RtspStreamToVideo
                 RtpTransport = RtpTransportProtocol.TCP
             };
 
-            var cts = new CancellationTokenSource();
+            Start(connectionParameters);
 
-            using (var rtspClient = new RtspClient(connectionParameters))
-            {
-                rtspClient.FrameReceived += FrameReceived;
-                await rtspClient.ConnectAsync(cts.Token);
-                _startDateTime = DateTime.Now;
-                await rtspClient.ReceiveAsync(cts.Token);
-            }
+            Console.ReadLine();
+
+            Stop();
         }
 
-        private static void FrameReceived(object sender, RawFrame rawFrame)
+        public static void Start(ConnectionParameters connectionParameters)
         {
-            switch (rawFrame)
-            {
-                case RawH264IFrame h264IFrame:
-                    Console.WriteLine($"{(DateTime.Now - _startDateTime):g}: H.264 I frame received");
-                    break;
-                case RawH264PFrame h264PFrame:
-                    Console.WriteLine($"{(DateTime.Now - _startDateTime):g}: H.264 P frame received");
-                    break;
-            }
+            if (_rawFramesSource != null)
+                return;
+
+            _rawFramesSource = new RawFramesSource(connectionParameters);
+            
+            _realtimeVideoSource.SetRawFramesSource(_rawFramesSource);
+            _rawFramesSource.Start();
+        }
+
+        public static void Stop()
+        {
+            if (_rawFramesSource == null)
+                return;
+            
+            _rawFramesSource.Stop();
+            _realtimeVideoSource.SetRawFramesSource(null);
+            _rawFramesSource = null;
         }
     }
 }
