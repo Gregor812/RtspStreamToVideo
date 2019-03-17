@@ -41,6 +41,9 @@ namespace RtspStreamToVideo.RawFramesDecoding.FFmpeg
     {
         private const string LibraryName = "libffmpeghelper.so";
 
+        [DllImport(LibraryName, EntryPoint="init_all", CallingConvention=CallingConvention.Cdecl)]
+        public static extern void InitAll();
+
         [DllImport(LibraryName, EntryPoint = "create_video_decoder", CallingConvention = CallingConvention.Cdecl)]
         public static extern int CreateVideoDecoder(FFmpegVideoCodecId videoCodecId, out IntPtr handle);
 

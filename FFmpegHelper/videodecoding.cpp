@@ -20,6 +20,11 @@ struct ScalerContext
 	AVPixelFormat ScaledPixelFormat;
 };
 
+void init_all()
+{
+	avcodec_register_all();
+}
+
 int create_video_decoder(int codec_id, void **handle)
 {
 	if (!handle)

@@ -6,6 +6,7 @@
 #define DllExport(rettype)  extern "C" __attribute__((cdecl)) rettype
 #endif
 
+DllExport(void) init_all();
 DllExport(int) create_video_decoder(int codec_id, void **handle);
 DllExport(int) set_video_decoder_extradata(void *handle, void *extradata, int extradataLength);
 DllExport(int) decode_video_frame(void *handle, void *rawBuffer, int rawBufferLength, int *frameWidth, int *frameHeight, int *framePixelFormat);

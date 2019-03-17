@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RtspClientSharp;
 using RtspClientSharp.RawFrames;
 using RtspClientSharp.Rtsp;
+using RtspStreamToVideo.RawFramesDecoding.FFmpeg;
 
 namespace RtspStreamToVideo.RawFramesReceiving
 {
@@ -26,6 +27,7 @@ namespace RtspStreamToVideo.RawFramesReceiving
 
         public void Start()
         {
+            FFmpegVideoPInvoke.InitAll();
             _cancellationTokenSource = new CancellationTokenSource();
             _workTask = Task.Run(() => ReceiveAsync(_cancellationTokenSource.Token));
         }
