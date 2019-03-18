@@ -2,6 +2,25 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "libffmpeghelper-build",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "-C",
+                "${workspaceFolder}/FFmpegHelper/"
+            ]
+        },
+        {
+            "label": "libffmpeghelper-copy",
+            "type": "shell",
+            "command": "cp",
+            "args": [
+                "${workspaceFolder}/FFmpegHelper/libffmpeghelper.so",
+                "${workspaceFolder}/RtspStreamToVideo/libffmpeghelper.so"
+            ],
+            "dependsOn": "libffmpeghelper-build"
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",
@@ -9,6 +28,7 @@
                 "build",
                 "${workspaceFolder}/RtspStreamToVideo/RtspStreamToVideo.csproj"
             ],
+            "dependsOn": "libffmpeghelper-copy",
             "problemMatcher": "$msCompile"
         }
     ]

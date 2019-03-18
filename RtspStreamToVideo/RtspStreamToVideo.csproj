@@ -11,4 +11,8 @@
     <PackageReference Include="RtspClientSharp" Version="1.2.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="libffmpeghelper.so" CopyToOutputDirectory="Always"/>
+  </ItemGroup>
+
 </Project>
